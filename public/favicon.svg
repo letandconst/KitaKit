@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">KitaKit favicon</title>
+  <rect width="64" height="64" rx="14" fill="#2f4a36"/>
+  <path d="M18 20c0-3.314 2.686-6 6-6h16c3.314 0 6 2.686 6 6v24c0 3.314-2.686 6-6 6H24c-3.314 0-6-2.686-6-6V20Z" fill="#fffdf8"/>
+  <path d="M24 22h16M24 29h16M24 36h8" stroke="#5f7d5d" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="42" cy="42" r="10" fill="#d19a76"/>
+  <path d="M38 42h8M42 38v8" stroke="#fffdf8" stroke-width="3" stroke-linecap="round"/>
+</svg>
