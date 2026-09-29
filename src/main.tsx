@@ -62,6 +62,7 @@ createRoot(root).render(
           onComplete={() => {
             localStorage.setItem("kitakit-onboarding-seen", "true");
             window.dispatchEvent(new Event("kitakit-onboarding-seen"));
+            window.dispatchEvent(new Event("kitakit-tour-complete"));
           }}
           onSkip={() => {
             localStorage.setItem("kitakit-onboarding-seen", "true");

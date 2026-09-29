@@ -147,6 +147,14 @@ body {
   grid-column: span 2;
 }
 
+.start-form > .start-form-pair {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  align-items: end;
+}
+
 .answer-card {
   align-content: stretch;
 }
@@ -196,6 +204,30 @@ body {
   margin-top: 18px;
   background: var(--surface);
   border-color: var(--line) !important;
+}
+
+.tour-complete-panel {
+  margin-bottom: 18px;
+  background: color-mix(in srgb, var(--surface) 86%, var(--primary-soft));
+  border-color: color-mix(in srgb, var(--primary) 34%, var(--line)) !important;
+  animation: tour-complete-in 180ms ease-out;
+}
+
+.tour-complete-panel svg {
+  color: var(--primary);
+  flex: 0 0 auto;
+}
+
+@keyframes tour-complete-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .tour-icon {
@@ -756,6 +788,10 @@ body {
   .planning-controls,
   .shopping-head,
   .shopping-row {
+    grid-template-columns: 1fr;
+  }
+
+  .start-form > .start-form-pair {
     grid-template-columns: 1fr;
   }
 

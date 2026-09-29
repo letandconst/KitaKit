@@ -6,39 +6,10 @@ export const onboardingTours: Tour[] = [
     tour: "kitakit-setup",
     steps: [
       {
-        icon: "👋",
-        title: "Start with real food costs",
-        content:
-          "KitaKit works best when inventory prices, recipe usage, and selling format are connected. This tour shows the setup order.",
-        selector: "#onboarding-welcome",
-        side: "bottom",
-        cardOffset: 32,
-        scrollOffset: 24,
-        showControls: true,
-        showSkip: true,
-        pointerPadding: 12,
-        pointerRadius: 8,
-        selectorRetryAttempts: 3,
-      },
-      {
-        icon: "📦",
-        title: "Add ingredient and packaging inventory",
-        content:
-          "Inventory stores pack content, unit, purchase price, on-hand stock, and used quantity. Recipe rows pull cost and unit from here.",
-        selector: "#nav-inventory",
-        side: "bottom",
-        cardOffset: 32,
-        scrollOffset: 24,
-        showControls: true,
-        showSkip: true,
-        pointerPadding: 10,
-        pointerRadius: 8,
-      },
-      {
         icon: "🍰",
         title: "Create or choose a product",
         content:
-          "Use this area to switch products or create a new food item you want to cost.",
+          "Start by naming the food product you sell, or choose an existing product when you have more than one.",
         selector: "#product-identity",
         side: "bottom",
         cardOffset: 32,
@@ -51,10 +22,10 @@ export const onboardingTours: Tour[] = [
       },
       {
         icon: "🧁",
-        title: "Set selling format",
+        title: "Set selling format and unit",
         content:
-          "Single means sold one piece at a time. Bundle and bulk add a quantity field, like 6 pcs per pack or 50 pcs per order.",
-        selector: "#selling-format",
+          "Choose whether this is sold as a single item, bundle, or bulk order, then set the unit customers buy, like pc, tray, bottle, or box.",
+        selector: "#selling-setup",
         side: "bottom",
         cardOffset: 32,
         scrollOffset: 24,
@@ -66,10 +37,10 @@ export const onboardingTours: Tour[] = [
       },
       {
         icon: "📏",
-        title: "Enter recipe yield",
+        title: "Enter yield and target margin",
         content:
-          "Recipe yield is how many sellable pieces one recipe batch makes. This is what turns batch ingredients into per-piece cost.",
-        selector: "#recipe-yield",
+          "Recipe yield tells KitaKit how many sellable units one batch makes. Target margin controls the recommended selling price.",
+        selector: "#recipe-pricing",
         side: "bottom",
         cardOffset: 32,
         scrollOffset: 24,
@@ -78,6 +49,20 @@ export const onboardingTours: Tour[] = [
         pointerPadding: 10,
         pointerRadius: 8,
         selectorRetryAttempts: 5,
+      },
+      {
+        icon: "📦",
+        title: "Create ingredient and packaging inventory",
+        content:
+          "Add ingredients and packaging in Inventory with pack content, unit, purchase price, and stock. Recipe rows pull cost and unit from here.",
+        selector: "#nav-inventory",
+        side: "bottom",
+        cardOffset: 32,
+        scrollOffset: 24,
+        showControls: true,
+        showSkip: true,
+        pointerPadding: 10,
+        pointerRadius: 8,
       },
       {
         icon: "🥣",

@@ -24,6 +24,7 @@ import {
   BadgeDollarSign,
   Boxes,
   Calculator,
+  CheckCircle2,
   Gauge,
   HandCoins,
   Moon,
@@ -48,7 +49,7 @@ import {
   starterProducts,
   unitOptions,
 } from "./constants";
-import { addProduct, removeProduct } from "./utils/entities";
+import { addProduct, createBlankProduct, removeProduct } from "./utils/entities";
 import { money } from "./utils/format";
 import { calculateTotals } from "./utils/costing";
 import { loadPersistedState, writeAppState } from "./utils/storage";
@@ -92,6 +93,7 @@ function App() {
   const [activeStep, setActiveStep] = useState<CostStep>("ingredients");
   const [activeView, setActiveView] = useState<AppView>("inventory");
   const [dataReady, setDataReady] = useState(false);
+  const [showTourComplete, setShowTourComplete] = useState(false);
   const { colorScheme, setColorScheme } = useMantineColorScheme();
   const { closeNextStep, startNextStep } = useNextStep();
   const isDark = colorScheme === "dark";
@@ -116,9 +118,12 @@ function App() {
     loadPersistedState()
       .then((data) => {
         if (cancelled) return;
-        setProducts(data.products);
+        const loadedProducts = data.products.length
+          ? data.products
+          : [createBlankProduct()];
+        setProducts(loadedProducts);
         setInventory(data.inventory);
-        setActiveId(data.products[0]?.id);
+        setActiveId(loadedProducts[0]?.id);
         setDataReady(true);
       })
       .catch(() => {
@@ -143,12 +148,20 @@ function App() {
     function hideOnboardingLauncher() {
       setShowOnboardingLauncher(false);
     }
+    function showTourCompleteMessage() {
+      setShowTourComplete(true);
+    }
 
     window.addEventListener("kitakit-onboarding-seen", hideOnboardingLauncher);
+    window.addEventListener("kitakit-tour-complete", showTourCompleteMessage);
     return () => {
       window.removeEventListener(
         "kitakit-onboarding-seen",
         hideOnboardingLauncher,
+      );
+      window.removeEventListener(
+        "kitakit-tour-complete",
+        showTourCompleteMessage,
       );
     };
   }, []);
@@ -173,6 +186,7 @@ function App() {
 
   function startSpotlightTour(): void {
     closeNextStep();
+    setShowTourComplete(false);
     setShowOnboardingLauncher(true);
     if (!activeProduct) addProduct(setProducts, setActiveId);
     changeView("costing");
@@ -248,6 +262,13 @@ function App() {
     <Container component="main" size="xl" className="app-shell">
       {showOnboardingLauncher && (
         <OnboardingLauncher onStartTour={startSpotlightTour} />
+      )}
+      {showTourComplete && (
+        <TourCompleteNotice
+          onClose={() => setShowTourComplete(false)}
+          onOpenInventory={() => changeView("inventory")}
+          onContinueCosting={() => changeView("costing")}
+        />
       )}
       <TopPanel
         product={activeProduct}
@@ -438,62 +459,81 @@ function TopPanel({
               }
               allowDeselect={false}
             />
-            <div id="selling-format">
-              <Select
-                label="Sell as"
-                description={getSaleModeDescription(product.saleMode)}
-                data={saleModeOptions}
-                value={product.saleMode ?? "single"}
-                onChange={(value) =>
-                  onUpdate((currentProduct) => {
-                    const saleMode = value ?? "single";
+            <div id="selling-setup" className="start-form-pair">
+              <div id="selling-format">
+                <Select
+                  label="Sell as"
+                  description={getSaleModeDescription(product.saleMode)}
+                  data={saleModeOptions}
+                  value={product.saleMode ?? "single"}
+                  onChange={(value) =>
+                    onUpdate((currentProduct) => {
+                      const saleMode = value ?? "single";
 
-                    if (saleMode === "single") {
+                      if (saleMode === "single") {
+                        return {
+                          saleMode: saleMode as SaleMode,
+                          bundleSize: 1,
+                          saleQuantity: 1,
+                        };
+                      }
+
+                      if (saleMode === "bulk") {
+                        return {
+                          saleMode: saleMode as SaleMode,
+                          saleQuantity: currentProduct.saleQuantity || 10,
+                        };
+                      }
+
                       return {
                         saleMode: saleMode as SaleMode,
-                        bundleSize: 1,
-                        saleQuantity: 1,
+                        bundleSize: currentProduct.bundleSize || 6,
                       };
-                    }
-
-                    if (saleMode === "bulk") {
-                      return {
-                        saleMode: saleMode as SaleMode,
-                        saleQuantity: currentProduct.saleQuantity || 10,
-                      };
-                    }
-
-                    return {
-                      saleMode: saleMode as SaleMode,
-                      bundleSize: currentProduct.bundleSize || 6,
-                    };
-                  })
-                }
-                allowDeselect={false}
-              />
+                    })
+                  }
+                  allowDeselect={false}
+                />
+              </div>
+              <div id="selling-unit">
+                <Select
+                  label="Selling unit"
+                  description="The unit customers buy, such as pc, tray, bottle, or box."
+                  data={unitOptions}
+                  value={product.saleUnit ?? "pc"}
+                  onChange={(value) =>
+                    onUpdate(() => ({ saleUnit: value ?? "pc" }))
+                  }
+                  searchable
+                  allowDeselect={false}
+                />
+              </div>
             </div>
-            <Select
-              label="Selling unit"
-              description="The unit customers buy, such as pc, tray, bottle, or box."
-              data={unitOptions}
-              value={product.saleUnit ?? "pc"}
-              onChange={(value) =>
-                onUpdate(() => ({ saleUnit: value ?? "pc" }))
-              }
-              searchable
-              allowDeselect={false}
-            />
-            <div id="recipe-yield">
-              <NumberInput
-                label="Recipe yield"
-                description={`How many sellable ${product.saleUnit || "units"} one recipe batch makes.`}
-                min={1}
-                step={1}
-                value={product.batchYield ?? product.batchUnits}
-                onChange={(value) =>
-                  onUpdate(() => ({ batchYield: Number(value) || 1 }))
-                }
-              />
+            <div id="recipe-pricing" className="start-form-pair">
+              <div id="recipe-yield">
+                <NumberInput
+                  label="Recipe yield"
+                  description={`How many sellable ${product.saleUnit || "units"} one recipe batch makes.`}
+                  min={1}
+                  step={1}
+                  value={product.batchYield ?? product.batchUnits}
+                  onChange={(value) =>
+                    onUpdate(() => ({ batchYield: Number(value) || 1 }))
+                  }
+                />
+              </div>
+              <div id="target-margin">
+                <NumberInput
+                  label="Target margin"
+                  min={1}
+                  max={95}
+                  step={1}
+                  value={product.targetMargin}
+                  suffix="%"
+                  onChange={(value) =>
+                    onUpdate(() => ({ targetMargin: Number(value) || 40 }))
+                  }
+                />
+              </div>
             </div>
             {product.saleMode !== "single" && (
               <NumberInput
@@ -518,17 +558,6 @@ function TopPanel({
                 }
               />
             )}
-            <NumberInput
-              label="Target margin"
-              min={1}
-              max={95}
-              step={1}
-              value={product.targetMargin}
-              suffix="%"
-              onChange={(value) =>
-                onUpdate(() => ({ targetMargin: Number(value) || 40 }))
-              }
-            />
           </div>
         </Stack>
 
@@ -669,6 +698,48 @@ function OnboardingLauncher({
         >
           Start guided tour
         </Button>
+      </Group>
+    </Card>
+  );
+}
+
+function TourCompleteNotice({
+  onClose,
+  onOpenInventory,
+  onContinueCosting,
+}: {
+  onClose: () => void;
+  onOpenInventory: () => void;
+  onContinueCosting: () => void;
+}) {
+  return (
+    <Card
+      className="tour-complete-panel"
+      padding="md"
+      radius="sm"
+      withBorder
+    >
+      <Group justify="space-between" gap="md" align="center">
+        <Group gap="sm" wrap="nowrap">
+          <CheckCircle2 size={22} aria-hidden="true" />
+          <div>
+            <Text fw={850}>You are ready to set up your first costing.</Text>
+            <Text size="sm" c="dimmed">
+              Add inventory first, then continue building the product recipe.
+            </Text>
+          </div>
+        </Group>
+        <Group gap="xs">
+          <Button type="button" variant="light" size="xs" onClick={onOpenInventory}>
+            Open inventory
+          </Button>
+          <Button type="button" size="xs" onClick={onContinueCosting}>
+            Continue costing
+          </Button>
+          <Button type="button" variant="subtle" size="xs" onClick={onClose}>
+            Dismiss
+          </Button>
+        </Group>
       </Group>
     </Card>
   );
