@@ -97,6 +97,25 @@ function CostStepPanel({
         ),
     )
     .map((name) => ({ value: name, label: name }));
+  const getBulkOptionsForRow = (rowIndex: number) => {
+    const currentValue = bulkSelections[rowIndex];
+    const optionMap = new Map(
+      inventoryOptions.map((option) => [option.value, option]),
+    );
+
+    if (
+      currentValue &&
+      !optionMap.has(currentValue) &&
+      inventory.some((item) => item.name === currentValue)
+    ) {
+      optionMap.set(currentValue, {
+        value: currentValue,
+        label: currentValue,
+      });
+    }
+
+    return Array.from(optionMap.values());
+  };
   const bulkRows = Array.from(
     { length: Math.max(Number(bulkCount) || 1, 1) },
     (_, index) => index,
@@ -247,7 +266,7 @@ function CostStepPanel({
                 key={index}
                 label={`${step === "ingredients" ? "Ingredient" : "Packaging"} ${index + 1}`}
                 placeholder="Select from inventory"
-                data={inventoryOptions}
+                data={getBulkOptionsForRow(index)}
                 value={bulkSelections[index] ?? null}
                 searchable
                 clearable
