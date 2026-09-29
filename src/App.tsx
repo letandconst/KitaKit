@@ -66,9 +66,9 @@ import type {
 const iconSize = 16;
 
 const appViews: { value: AppView; label: string; Icon: LucideIcon }[] = [
+  { value: "inventory", label: "Inventory", Icon: Boxes },
   { value: "costing", label: "Costing", Icon: Calculator },
   { value: "planning", label: "Production Plan", Icon: ShoppingCart },
-  { value: "inventory", label: "Inventory", Icon: Boxes },
 ];
 
 const stepTabs: { value: CostStep; label: string; Icon: LucideIcon }[] = [
@@ -90,7 +90,7 @@ function App() {
     starterProducts[0]?.id,
   );
   const [activeStep, setActiveStep] = useState<CostStep>("ingredients");
-  const [activeView, setActiveView] = useState<AppView>("costing");
+  const [activeView, setActiveView] = useState<AppView>("inventory");
   const [dataReady, setDataReady] = useState(false);
   const { colorScheme, setColorScheme } = useMantineColorScheme();
   const { closeNextStep, startNextStep } = useNextStep();
