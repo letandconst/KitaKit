@@ -29,24 +29,8 @@ export function createBlankProduct(): Product {
     batchUnits: 10,
     batchYield: 50,
     bundleSize: 6,
-    ingredients: [
-      {
-        id: crypto.randomUUID(),
-        name: "",
-        qty: 100,
-        unitCost: 0,
-        unit: "g",
-      },
-    ],
-    packaging: [
-      {
-        id: crypto.randomUUID(),
-        name: "Packaging",
-        qty: 1,
-        unitCost: 0,
-        unit: "pc",
-      },
-    ],
+    ingredients: [],
+    packaging: [],
     labor: [
       { id: crypto.randomUUID(), name: "Production work", hours: 1, rate: 0 },
     ],

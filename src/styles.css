@@ -182,11 +182,12 @@ body {
 
 .onboarding-panel {
   margin-top: 18px;
+  margin-bottom: 18px;
   box-shadow: 0 8px 26px rgba(20, 34, 31, 0.04);
 }
 
 .onboarding-panel.welcome {
-  width: min(100%, 820px);
+  width: 100%;
   margin-top: 0;
 }
 

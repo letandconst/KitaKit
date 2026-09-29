@@ -95,6 +95,21 @@ export const onboardingTours: Tour[] = [
         selectorRetryAttempts: 5,
       },
       {
+        icon: "💡",
+        title: "Read the instant answers",
+        content:
+          "These cards summarize the result as you work: actual cost, recommended selling price, and expected profit at your target margin.",
+        selector: "#answer-cards",
+        side: "left",
+        cardOffset: 32,
+        scrollOffset: 24,
+        showControls: true,
+        showSkip: true,
+        pointerPadding: 10,
+        pointerRadius: 8,
+        selectorRetryAttempts: 5,
+      },
+      {
         icon: "💸",
         title: "Review actual cost and price",
         content:

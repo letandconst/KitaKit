@@ -533,6 +533,7 @@ function TopPanel({
         </Stack>
 
         <SimpleGrid
+          id="answer-cards"
           cols={1}
           spacing="md"
           className="answer-card"
@@ -651,12 +652,14 @@ function OnboardingLauncher({
               : "Need help setting this up?"}
           </Title>
           <Text c="dimmed" size="sm" mt={4}>
-            Launch an interactive walkthrough that highlights the exact parts
-            of the app you need to set up inventory, recipe yield, costs, and
+            Launch an interactive walkthrough that highlights the exact parts of
+            the app you need to set up inventory, recipe yield, costs, and
             production planning.
           </Text>
         </div>
-        <Badge color="sage" variant="light">Product tour</Badge>
+        <Badge color="sage" variant="light">
+          Product tour
+        </Badge>
       </Group>
       <Group justify="flex-start" mt="md">
         <Button
@@ -688,14 +691,14 @@ function AppFooter({ onReplayTour }: { onReplayTour: () => void }) {
           >
             Replay tour
           </Button>
-          <Button
+          {/* <Button
             component="a"
-            href="mailto:?subject=KitaKit%20feedback"
+            href="#"
             variant="subtle"
             size="xs"
           >
             Send feedback
-          </Button>
+          </Button> */}
         </Group>
       </Group>
     </footer>
