@@ -2,9 +2,11 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { MantineProvider, createTheme } from "@mantine/core";
 import { NextStepProvider, NextStepReact } from "nextstepjs";
+import { PostHogProvider } from "posthog-js/react";
 import "@mantine/core/styles.css";
 import App from "./App";
 import { KitaKitTourCard, onboardingTours } from "./onboarding";
+import { captureAnalyticsEvent, initPostHog, posthog } from "./posthog";
 import "./styles.css";
 
 const theme = createTheme({
@@ -48,30 +50,36 @@ if (!root) {
   throw new Error("Root element was not found.");
 }
 
+initPostHog();
+
 createRoot(root).render(
   <StrictMode>
-    <MantineProvider theme={theme} defaultColorScheme="light">
-      <NextStepProvider>
-        <NextStepReact
-          steps={onboardingTours}
-          cardComponent={KitaKitTourCard}
-          shadowRgb="20, 34, 31"
-          shadowOpacity="0.34"
-          overlayZIndex={2500}
-          disableConsoleLogs
-          onComplete={() => {
-            localStorage.setItem("kitakit-onboarding-seen", "true");
-            window.dispatchEvent(new Event("kitakit-onboarding-seen"));
-            window.dispatchEvent(new Event("kitakit-tour-complete"));
-          }}
-          onSkip={() => {
-            localStorage.setItem("kitakit-onboarding-seen", "true");
-            window.dispatchEvent(new Event("kitakit-onboarding-seen"));
-          }}
-        >
-          <App />
-        </NextStepReact>
-      </NextStepProvider>
-    </MantineProvider>
+    <PostHogProvider client={posthog}>
+      <MantineProvider theme={theme} defaultColorScheme="light">
+        <NextStepProvider>
+          <NextStepReact
+            steps={onboardingTours}
+            cardComponent={KitaKitTourCard}
+            shadowRgb="20, 34, 31"
+            shadowOpacity="0.34"
+            overlayZIndex={2500}
+            disableConsoleLogs
+            onComplete={() => {
+              captureAnalyticsEvent("onboarding_tour_completed");
+              localStorage.setItem("kitakit-onboarding-seen", "true");
+              window.dispatchEvent(new Event("kitakit-onboarding-seen"));
+              window.dispatchEvent(new Event("kitakit-tour-complete"));
+            }}
+            onSkip={() => {
+              captureAnalyticsEvent("onboarding_tour_skipped");
+              localStorage.setItem("kitakit-onboarding-seen", "true");
+              window.dispatchEvent(new Event("kitakit-onboarding-seen"));
+            }}
+          >
+            <App />
+          </NextStepReact>
+        </NextStepProvider>
+      </MantineProvider>
+    </PostHogProvider>
   </StrictMode>,
 );

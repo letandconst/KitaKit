@@ -41,6 +41,7 @@ The app is built for costing food products such as desserts, baked goods, bevera
 - Lucide React icons
 - NextStepJS
 - Motion
+- PostHog analytics
 - IndexedDB for local device data persistence
 
 ## Project Structure
@@ -78,6 +79,19 @@ http://127.0.0.1:5173/
 ```
 
 If that port is already in use, Vite may choose another port.
+
+## Analytics
+
+KitaKit uses PostHog for product analytics. Create a local `.env` file from
+`.env.example` and set your project key:
+
+```bash
+VITE_POSTHOG_KEY=phc_your_project_api_key
+VITE_POSTHOG_HOST=https://us.i.posthog.com
+```
+
+Use the EU host instead if your PostHog project is in the EU region. Analytics
+are disabled when `VITE_POSTHOG_KEY` is not set.
 
 ## Available Scripts
 

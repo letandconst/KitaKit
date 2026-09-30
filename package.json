@@ -16,6 +16,7 @@
     "lucide-react": "^1.48.0",
     "motion": "^13.4.6",
     "nextstepjs": "^2.3.0",
+    "posthog-js": "^1.435.1",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "vite": "^7.1.7"

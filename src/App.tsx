@@ -53,6 +53,7 @@ import { addProduct, createBlankProduct, removeProduct } from "./utils/entities"
 import { money } from "./utils/format";
 import { calculateTotals } from "./utils/costing";
 import { loadPersistedState, writeAppState } from "./utils/storage";
+import { captureAnalyticsEvent } from "./posthog";
 import type {
   AppView,
   CostStep,
@@ -179,6 +180,7 @@ function App() {
 
   function changeView(view: AppView): void {
     setActiveView(view);
+    captureAnalyticsEvent("app_view_changed", { view });
     window.requestAnimationFrame(() => {
       window.scrollTo({ top: 0, behavior: "smooth" });
     });
@@ -188,6 +190,7 @@ function App() {
     closeNextStep();
     setShowTourComplete(false);
     setShowOnboardingLauncher(true);
+    captureAnalyticsEvent("onboarding_tour_started");
     if (!activeProduct) addProduct(setProducts, setActiveId);
     changeView("costing");
     setActiveStep("ingredients");
