@@ -86,8 +86,8 @@ KitaKit uses PostHog for product analytics. Create a local `.env` file from
 `.env.example` and set your project key:
 
 ```bash
-VITE_POSTHOG_KEY=phc_your_project_api_key
-VITE_POSTHOG_HOST=https://us.i.posthog.com
+VITE_POSTHOG_KEY=your_posthog_project_api_key
+VITE_POSTHOG_HOST=yor_posthog_host
 ```
 
 Use the EU host instead if your PostHog project is in the EU region. Analytics
